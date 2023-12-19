@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/mozoarella/wombot/internal/commands/batlibs"
 	"github.com/mozoarella/wombot/internal/commands/magic8ball"
+	"github.com/mozoarella/wombot/internal/commands/textmanipulation"
 	"github.com/mozoarella/wombot/internal/commands/translations"
 	"github.com/mozoarella/wombot/internal/types"
 	"github.com/mozoarella/wombot/internal/utils"
@@ -54,6 +55,14 @@ var (
 		},
 		{
 			Name: "Translate to English",
+			Type: discordgo.MessageApplicationCommand,
+		},
+		{
+			Name: "Mockify",
+			Type: discordgo.MessageApplicationCommand,
+		},
+		{
+			Name: "UwUify",
 			Type: discordgo.MessageApplicationCommand,
 		},
 	}
@@ -107,6 +116,38 @@ var (
 							Description: translations.MsgTranslationToEnglish(i),
 							Author: &discordgo.MessageEmbedAuthor{
 								Name:    "Wombot Translator",
+								IconURL: s.State.User.AvatarURL("1024"),
+							},
+						},
+					},
+				},
+			})
+		},
+		"Mockify": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Description: textmanipulation.MockText(i),
+							Author: &discordgo.MessageEmbedAuthor{
+								Name:    "Mock",
+								IconURL: s.State.User.AvatarURL("1024"),
+							},
+						},
+					},
+				},
+			})
+		},
+		"UwUify": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Description: textmanipulation.Uwuify(i),
+							Author: &discordgo.MessageEmbedAuthor{
+								Name:    "UwUify",
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},

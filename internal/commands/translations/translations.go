@@ -7,6 +7,15 @@ import (
 	"github.com/mozoarella/wombot/internal/utils"
 )
 
+/*
+	As it stands I am using Google translations and I use the Microsoft Translations APIs for getting a language's name
+	Google only offers up translated names for languages in one language at a time (specified with a parameter)
+	rather than Microsoft offering both the name in English and the native one.
+
+	The Microsoft Translations API also doesn't require credentials for getting the language names
+	but I keep them in place in case I have to switch translation backends.
+*/
+
 type SingleTranslation struct {
 	fromLang       string
 	fromLangNative string
@@ -28,7 +37,8 @@ func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
 		return fmt.Sprintf("I can't translate messages without text, sorry.\n\n[Go to the original message](%v)", msgUrl)
 	}
 
-	tl := msAnyToLanguage(msg.Content, "en")
+	//tl := msAnyToLanguage(msg.Content, "en")
+	tl := gtAnyToLanguage(msg.Content, "en")
 
 	return buildMessage(tl, msgUrl)
 }

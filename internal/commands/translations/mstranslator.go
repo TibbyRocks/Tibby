@@ -5,15 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
-	"os"
 
 	"github.com/mozoarella/wombot/internal/utils"
 )
 
 var (
-	log         = utils.Log
-	endpoint    = "https://api.cognitive.microsofttranslator.com"
-	languageMap map[string]Language
+	log                = utils.Log
+	microsoft_endpoint = "https://api.cognitive.microsofttranslator.com"
+	languageMap        map[string]Language
 )
 
 func init() {
@@ -30,7 +29,7 @@ type Language struct {
 	nativeName string
 }
 
-type TranslationResult struct {
+type MsTranslationResult struct {
 	DetectedLanguage struct {
 		Name  string  `json:"language"`
 		Score float32 `json:"score"`
@@ -59,7 +58,7 @@ func msGetLanguageByCode(code string) []string {
 }
 
 func msGetLanguages() map[string]Language {
-	reqUrl, _ := url.Parse(endpoint + "/languages")
+	reqUrl, _ := url.Parse(microsoft_endpoint + "/languages")
 	q := reqUrl.Query()
 	q.Add("api-version", "3.0")
 	q.Add("scope", "translation")
@@ -100,10 +99,11 @@ func msGetLanguages() map[string]Language {
 
 }
 
+/*
 func msAnyToLanguage(text string, language string) SingleTranslation {
 	key := os.Getenv("WB_MS_TRANSLATE_KEY")
 	region := os.Getenv("WB_MS_TRANSLATE_REGION")
-	reqUrl, _ := url.Parse(endpoint + "/translate")
+	reqUrl, _ := url.Parse(microsoft_endpoint + "/translate")
 	q := reqUrl.Query()
 	q.Add("api-version", "3.0")
 	q.Add("to", language)
@@ -130,7 +130,7 @@ func msAnyToLanguage(text string, language string) SingleTranslation {
 		log.Error("2" + err.Error())
 	}
 
-	var result []TranslationResult
+	var result []MsTranslationResult
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
 		log.Error("3" + err.Error())
 	}
@@ -147,3 +147,4 @@ func msAnyToLanguage(text string, language string) SingleTranslation {
 	return finalTranslation
 
 }
+*/

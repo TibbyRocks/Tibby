@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"fmt"
+
+	"github.com/bwmarrin/discordgo"
+)
 
 // Gets the actual Discord username for the user that invoked an interaction, don't use this when you want want a nickname instead.
 func GetUsernameFromInteraction(i *discordgo.InteractionCreate) string {
@@ -31,4 +35,21 @@ func GetOptionsFromInteraction(i *discordgo.InteractionCreate) map[string]*disco
 		optionMap[opt.Name] = opt
 	}
 	return optionMap
+}
+
+func ReturnInteractionMessageUrl(i *discordgo.InteractionCreate) string {
+	channelId := i.ChannelID
+	messageID := i.ApplicationCommandData().TargetID
+	guildID := i.GuildID
+
+	var url string
+
+	if guildID != "" {
+		url = fmt.Sprintf("https://discord.com/channels/%v/%v/%v", guildID, channelId, messageID)
+	} else {
+		url = fmt.Sprintf("https://discord.com/channels/@me/%v/%v", channelId, messageID)
+	}
+
+	return url
+
 }
