@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/mozoarella/wombot/internal/types"
+	"github.com/mozoarella/wombot/internal/utils"
 )
 
 type Randomizer = types.Randomizer
@@ -18,11 +19,7 @@ func init() {
 }
 
 func ShakeTheBall(i *discordgo.InteractionCreate) string {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := utils.GetOptionsFromInteraction(i)
 
 	var shaker string
 	var question string

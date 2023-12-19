@@ -1,10 +1,13 @@
 package batlibs
 
 import (
+	"fmt"
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/mozoarella/wombot/internal/commands"
 	"github.com/mozoarella/wombot/internal/types"
+	"github.com/mozoarella/wombot/internal/utils"
 )
 
 type Randomizer = types.Randomizer
@@ -17,6 +20,7 @@ var (
 	thirdPersonVerbs Randomizer
 	animals          Randomizer
 	fruit            Randomizer
+	log              = utils.Log
 )
 
 func init() {
@@ -40,7 +44,10 @@ func init() {
 }
 
 // This function splits up the message string and loops over every string
-func DoBatlibs(message string) string {
+func DoBatlibs(i *discordgo.InteractionCreate) string {
+	optionMap := utils.GetOptionsFromInteraction(i)
+	log.Info(fmt.Sprintf("User '%s' called the nounverb command with text '%s'", utils.GetUsernameFromInteraction(i), optionMap["msg"].StringValue()))
+	message := optionMap["msg"].StringValue()
 	splitMessage := strings.Split(message, " ")
 	var workSlice []string
 	for _, s := range splitMessage {

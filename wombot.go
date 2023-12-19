@@ -22,7 +22,8 @@ type Randomizer = types.Randomizer
 var (
 	GuildID            = ""
 	log                = utils.Log
-	unregisterCommands = flag.Bool("unregister", false, "Use this flag to uunregister all registered bot commands")
+	unregisterCommands = flag.Bool("unregister", false, "Use this flag to unregister all registered bot commands")
+	debugMode          = flag.Bool("debug", false, "Use this flag to enable debug mode")
 )
 
 var (
@@ -59,13 +60,8 @@ var (
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"batlibs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			options := i.ApplicationCommandData().Options
-			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-			for _, opt := range options {
-				optionMap[opt.Name] = opt
-			}
-			//log.Info(fmt.Sprintf("User '%s' called the nounverb command with text '%s'", i.Member.User.Username, optionMap["msg"].StringValue()))
-			libbedMsg := batlibs.DoBatlibs(optionMap["msg"].StringValue())
+
+			libbedMsg := batlibs.DoBatlibs(i)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -84,7 +80,7 @@ var (
 		},
 		"8ball": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
-			//log.Info(fmt.Sprintf("User '%s' called the 8ball command", i.Member.User.Username))
+			log.Info(fmt.Sprintf("User '%s' called the 8ball command", utils.GetUsernameFromInteraction(i)))
 			ballResponse := magic8ball.ShakeTheBall(i)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -127,7 +123,7 @@ func init() {
 
 func main() {
 
-	if os.Getenv("WB_DEBUG") == "true" {
+	if *debugMode {
 		utils.LogLevel.Set(slog.LevelDebug)
 	}
 
