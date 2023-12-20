@@ -65,6 +65,10 @@ var (
 			Name: "UwUify",
 			Type: discordgo.MessageApplicationCommand,
 		},
+		{
+			Name:        "docs",
+			Description: "Get the wombot docs",
+		},
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
@@ -148,6 +152,23 @@ var (
 							Description: textmanipulation.Uwuify(i),
 							Author: &discordgo.MessageEmbedAuthor{
 								Name:    "UwUify",
+								IconURL: s.State.User.AvatarURL("1024"),
+							},
+						},
+					},
+				},
+			})
+		},
+		"docs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Flags: discordgo.MessageFlagsEphemeral,
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Description: "[Read the Wombot docs here](https://wombot.mozoa.nl/docs)",
+							Author: &discordgo.MessageEmbedAuthor{
+								Name:    "Wombot Docs",
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
