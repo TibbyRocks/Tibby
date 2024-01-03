@@ -1,0 +1,9 @@
+account
+agency
+agent
+airplane
+airport
+alarm
+analyst
+animal
+apartment

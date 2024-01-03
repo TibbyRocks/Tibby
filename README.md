@@ -1,3 +1,3 @@
-![Wombot Logo](./img/wombot_header.png)
+## Tibby
  
 A Discord bot written in Go utilizing the DiscordGo library
