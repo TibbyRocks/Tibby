@@ -1,4 +1,4 @@
-module github.com/mozoarella/wombot
+module github.com/mozoarella/tibby
 
 go 1.21.4
 

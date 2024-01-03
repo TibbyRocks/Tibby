@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/mozoarella/wombot/internal/utils"
+	"github.com/mozoarella/tibby/internal/utils"
 )
 
 var (

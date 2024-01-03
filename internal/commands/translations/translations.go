@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/mozoarella/wombot/internal/utils"
+	"github.com/mozoarella/tibby/internal/utils"
 )
 
 /*

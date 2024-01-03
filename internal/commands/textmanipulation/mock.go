@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/mozoarella/wombot/internal/utils"
+	"github.com/mozoarella/tibby/internal/utils"
 )
 
 func MockText(i *discordgo.InteractionCreate) string {

@@ -3,7 +3,7 @@ package types
 import (
 	"math/rand"
 
-	"github.com/mozoarella/wombot/internal/utils"
+	"github.com/mozoarella/tibby/internal/utils"
 )
 
 type Randomizer struct {
