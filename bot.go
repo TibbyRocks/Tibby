@@ -25,6 +25,7 @@ var (
 	log                = utils.Log
 	unregisterCommands = flag.Bool("unregister", false, "Use this flag to unregister all registered bot commands")
 	debugMode          = flag.Bool("debug", false, "Use this flag to enable debug mode")
+	customs            = utils.BotCustoms
 )
 
 var (
@@ -67,7 +68,7 @@ var (
 		},
 		{
 			Name:        "docs",
-			Description: "Get the wombot docs",
+			Description: fmt.Sprintf("Get the %s docs", customs.BotName),
 		},
 	}
 
@@ -83,7 +84,7 @@ var (
 						{
 							Description: libbedMsg,
 							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "Wombot Batlibs!",
+								Name:    fmt.Sprintf("%s batlibs!", customs.BotName),
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
@@ -103,8 +104,8 @@ var (
 						{
 							Description: ballResponse,
 							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "Wombot Magic 8-Ball",
-								IconURL: "https://wombot-files.mozoa.nl/icons/8-ball.png",
+								Name:    fmt.Sprintf("%s Magic 8-Ball", customs.BotName),
+								IconURL: utils.GetCdnUri("8ball-icon"),
 							},
 						},
 					},
@@ -119,7 +120,7 @@ var (
 						{
 							Description: translations.MsgTranslationToEnglish(i),
 							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "Wombot Translator",
+								Name:    fmt.Sprintf("%s Translator", customs.BotName),
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
@@ -166,9 +167,9 @@ var (
 					Flags: discordgo.MessageFlagsEphemeral,
 					Embeds: []*discordgo.MessageEmbed{
 						{
-							Description: "[Read the Wombot docs here](https://wombot.mozoa.nl/docs)",
+							Description: fmt.Sprintf("[Read the %s docs here](%s)", customs.BotName, customs.DocsURL),
 							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "Wombot Docs",
+								Name:    fmt.Sprintf("%s docs", customs.BotName),
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
@@ -189,7 +190,7 @@ func main() {
 		utils.LogLevel.Set(slog.LevelDebug)
 	}
 
-	log.Info("Starting Wombot")
+	log.Info("Starting " + customs.BotName)
 
 	err := godotenv.Load()
 	if err != nil {
@@ -224,7 +225,7 @@ func main() {
 		return
 	}
 
-	log.Info(fmt.Sprintf("Wombot is running with the username '%s' and ID '%s'", dc.State.User.Username, dc.State.User.ID))
+	log.Info(fmt.Sprintf("%s is running with the username '%s' and ID '%s'", customs.BotName, dc.State.User.Username, dc.State.User.ID))
 
 	log.Info("Registering commands with the Discord API")
 	registeredCommands := make([]*discordgo.ApplicationCommand, len(botCommands))

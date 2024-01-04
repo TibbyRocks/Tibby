@@ -2,6 +2,7 @@ package translations
 
 import (
 	"encoding/json"
+	"html"
 	"net/http"
 	"net/url"
 	"os"
@@ -47,7 +48,9 @@ func gtAnyToLanguage(text string, language string) SingleTranslation {
 	}
 
 	finalTranslation := SingleTranslation{
-		translatedText: result.Data.Translations[0].TranslatedText,
+		// Google Translate takes the translatable string as a query parameter and has to be escaped.
+		// So when the result comes back we have to unescape it back to the original symbols.
+		translatedText: html.UnescapeString(result.Data.Translations[0].TranslatedText),
 		fromLang:       msGetLanguageByCode(result.Data.Translations[0].DetectedSourceLanguage)[0],
 		fromLangNative: msGetLanguageByCode(result.Data.Translations[0].DetectedSourceLanguage)[1],
 		toLang:         msGetLanguageByCode(language)[0],
