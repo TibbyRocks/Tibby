@@ -1,0 +1,10 @@
+{
+    "BotName": "Tibby",
+    "DocsURL": "https://docs.tibby.rocks",
+    "CDN": {
+        "BaseURL": "https://b2.tibby.rocks",
+        "Files": {
+            "8ball-icon": "/bot/icons/8-ball.png"
+        }
+    }
+}
