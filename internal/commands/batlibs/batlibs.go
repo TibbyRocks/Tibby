@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/mozoarella/tibby/internal/commands"
-	"github.com/mozoarella/tibby/internal/types"
-	"github.com/mozoarella/tibby/internal/utils"
+	"github.com/tibbyrocks/tibby/internal/commands"
+	"github.com/tibbyrocks/tibby/internal/types"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 type Randomizer = types.Randomizer

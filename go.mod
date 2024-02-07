@@ -1,4 +1,4 @@
-module github.com/mozoarella/tibby
+module github.com/tibbyrocks/tibby
 
 go 1.21.4
 

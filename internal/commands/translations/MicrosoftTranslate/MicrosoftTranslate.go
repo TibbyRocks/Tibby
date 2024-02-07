@@ -1,22 +1,29 @@
-package translations
+package microsofttranslate
 
 import (
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"os"
 
-	"github.com/mozoarella/tibby/internal/utils"
+	"github.com/tibbyrocks/tibby/internal/types"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 var (
 	log                = utils.Log
 	microsoft_endpoint = "https://api.cognitive.microsofttranslator.com"
 	languageMap        map[string]Language
+	Translator         types.Translator
 )
 
 func init() {
 	languageMap = msGetLanguages()
+	Translator = types.Translator{
+		FillLanguagesFromCodes: FillLanguagesFromCode,
+	}
+
 }
 
 type TranslationLanguages struct {
@@ -29,7 +36,7 @@ type Language struct {
 	nativeName string
 }
 
-type MsTranslationResult struct {
+type TranslationResult struct {
 	DetectedLanguage struct {
 		Name  string  `json:"language"`
 		Score float32 `json:"score"`
@@ -47,7 +54,7 @@ If the language is supported you get a slice with 2 items. The English name for 
 
 If the language is not supported you get an empty slice.
 */
-func msGetLanguageByCode(code string) []string {
+func GetLanguageByCode(code string) []string {
 	var response []string
 
 	if val, ok := languageMap[code]; ok {
@@ -55,6 +62,17 @@ func msGetLanguageByCode(code string) []string {
 	}
 
 	return response
+}
+
+func FillLanguagesFromCode(translation types.SingleTranslation) types.SingleTranslation {
+	workingTranslation := translation
+	fromLanguageNames := GetLanguageByCode(translation.FromLangCode)
+	toLanguageNames := GetLanguageByCode(workingTranslation.ToLangCode)
+	workingTranslation.FromLang = fromLanguageNames[0]
+	workingTranslation.FromLangNative = fromLanguageNames[1]
+	workingTranslation.ToLang = toLanguageNames[0]
+	workingTranslation.ToLangNative = toLanguageNames[1]
+	return workingTranslation
 }
 
 func msGetLanguages() map[string]Language {
@@ -99,20 +117,19 @@ func msGetLanguages() map[string]Language {
 
 }
 
-/*
-func msAnyToLanguage(text string, language string) SingleTranslation {
+func Translate(fromLang string, toLang string, translatable string) types.SingleTranslation {
 	key := os.Getenv("WB_MS_TRANSLATE_KEY")
 	region := os.Getenv("WB_MS_TRANSLATE_REGION")
 	reqUrl, _ := url.Parse(microsoft_endpoint + "/translate")
 	q := reqUrl.Query()
 	q.Add("api-version", "3.0")
-	q.Add("to", language)
+	q.Add("to", toLang)
 	reqUrl.RawQuery = q.Encode()
 
 	body := []struct {
 		Text string
 	}{
-		{Text: text},
+		{Text: translatable},
 	}
 	reqBody, _ := json.Marshal(body)
 
@@ -130,21 +147,18 @@ func msAnyToLanguage(text string, language string) SingleTranslation {
 		log.Error("2" + err.Error())
 	}
 
-	var result []MsTranslationResult
+	var result []TranslationResult
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
 		log.Error("3" + err.Error())
 	}
 
-	finalTranslation := SingleTranslation{
-		translatedText: result[0].Translations[0].Text,
-		fromLang:       msGetLanguageByCode(result[0].DetectedLanguage.Name)[0],
-		fromLangNative: msGetLanguageByCode(result[0].DetectedLanguage.Name)[1],
-		toLang:         msGetLanguageByCode(result[0].Translations[0].ToLanguage)[0],
-		toLangNative:   msGetLanguageByCode(result[0].Translations[0].ToLanguage)[1],
-		originalText:   text,
+	finalTranslation := types.SingleTranslation{
+		TranslatedText: result[0].Translations[0].Text,
+		FromLangCode:   result[0].DetectedLanguage.Name,
+		ToLangCode:     result[0].Translations[0].ToLanguage,
+		OriginalText:   translatable,
 	}
 
 	return finalTranslation
 
 }
-*/

@@ -3,7 +3,7 @@ package types
 import (
 	"math/rand"
 
-	"github.com/mozoarella/tibby/internal/utils"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 type Randomizer struct {

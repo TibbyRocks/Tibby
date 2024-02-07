@@ -10,12 +10,12 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"github.com/mozoarella/tibby/internal/commands/batlibs"
-	"github.com/mozoarella/tibby/internal/commands/magic8ball"
-	"github.com/mozoarella/tibby/internal/commands/textmanipulation"
-	"github.com/mozoarella/tibby/internal/commands/translations"
-	"github.com/mozoarella/tibby/internal/types"
-	"github.com/mozoarella/tibby/internal/utils"
+	"github.com/tibbyrocks/tibby/internal/commands/batlibs"
+	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
+	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
+	"github.com/tibbyrocks/tibby/internal/commands/translations"
+	"github.com/tibbyrocks/tibby/internal/types"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 type Randomizer = types.Randomizer
