@@ -43,16 +43,16 @@ func Uwuify(i *discordgo.InteractionCreate) string {
 		"l", "w",
 		"L", "W")
 
-	replaced := letterReplacer.Replace(input)
-	flavoured := addFlavour(replaced)
+	replacedText := letterReplacer.Replace(input)
+	flavouredText := addFlavour(replacedText)
 
-	var output_format string = `%v
+	var outputFormat string = `%v
 	
 	[Go to the original message](%v)
 	`
 
-	built_message := fmt.Sprintf(output_format, flavoured, msgUrl)
-	return built_message
+	builtMessage := fmt.Sprintf(outputFormat, flavouredText, msgUrl)
+	return builtMessage
 }
 
 func addFlavour(input string) string {

@@ -13,7 +13,7 @@ func MockText(i *discordgo.InteractionCreate) string {
 	input := msg.Content
 	msgUrl := utils.ReturnInteractionMessageUrl(i)
 
-	var mocked_text string
+	var mockedText string
 
 	if len(msg.Embeds) > 0 {
 		return fmt.Sprintf("I can't mock embeds, sorry.\n\n[Go to the original message](%v)", msgUrl)
@@ -33,12 +33,12 @@ func MockText(i *discordgo.InteractionCreate) string {
 		}
 	}
 
-	var output_format string = `%v
+	var outputFormat string = `%v
 	
 	[Go to the original message](%v)
 	`
 
-	mocked_text = strings.Join(textSlice, "")
-	built_message := fmt.Sprintf(output_format, mocked_text, msgUrl)
-	return built_message
+	mockedText = strings.Join(textSlice, "")
+	builtNessage := fmt.Sprintf(outputFormat, mockedText, msgUrl)
+	return builtNessage
 }
