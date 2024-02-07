@@ -4,7 +4,10 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/mozoarella/tibby/internal/utils"
+	googletranslate "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslate"
+	microsofttranslate "github.com/tibbyrocks/tibby/internal/commands/translations/MicrosoftTranslate"
+	"github.com/tibbyrocks/tibby/internal/types"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 /*
@@ -16,13 +19,13 @@ import (
 	but I keep them in place in case I have to switch translation backends.
 */
 
-type SingleTranslation struct {
-	fromLang       string
-	fromLangNative string
-	toLang         string
-	toLangNative   string
-	translatedText string
-	originalText   string
+var (
+	Translators map[string]types.Translator = make(map[string]types.Translator)
+)
+
+func init() {
+	Translators["microsoft"] = microsofttranslate.Translator
+	Translators["google"] = googletranslate.Translator
 }
 
 func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
@@ -38,12 +41,14 @@ func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
 	}
 
 	//tl := msAnyToLanguage(msg.Content, "en")
-	tl := gtAnyToLanguage(msg.Content, "en")
+	translation := Translators["google"].Translate("", "en", msg.Content)
 
-	return buildMessage(tl, msgUrl)
+	translationWithLanguages := Translators["microsoft"].FillLanguagesFromCodes(translation)
+
+	return buildMessage(translationWithLanguages, msgUrl)
 }
 
-func buildMessage(translation SingleTranslation, msgURL string) string {
+func buildMessage(translation types.SingleTranslation, msgURL string) string {
 	var translationFormatString string = `**%v (%v)**
 %v
 
@@ -52,7 +57,7 @@ func buildMessage(translation SingleTranslation, msgURL string) string {
 
 [Go to the original message](%v)
 `
-	builtMessage := fmt.Sprintf(translationFormatString, translation.fromLang, translation.fromLangNative, translation.originalText, translation.toLang, translation.toLangNative, translation.translatedText, msgURL)
+	builtMessage := fmt.Sprintf(translationFormatString, translation.FromLang, translation.FromLangNative, translation.OriginalText, translation.ToLang, translation.ToLangNative, translation.TranslatedText, msgURL)
 
 	return builtMessage
 }
