@@ -26,6 +26,8 @@ var (
 	unregisterCommands = flag.Bool("unregister", false, "Use this flag to unregister all registered bot commands")
 	debugMode          = flag.Bool("debug", false, "Use this flag to enable debug mode")
 	customs            = utils.BotCustoms
+	dc                 *discordgo.Session
+	err                error
 )
 
 var (
@@ -182,22 +184,20 @@ var (
 
 func init() {
 	flag.Parse()
-}
-
-func main() {
-
 	if *debugMode {
 		utils.LogLevel.Set(slog.LevelDebug)
 	}
-
-	log.Info("Starting " + customs.BotName)
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Debug("Couldn't load .env, this is probably fine")
 	} else {
 		log.Debug("Loaded .env file(s)")
 	}
+}
+
+func main() {
+
+	log.Info("Starting " + customs.BotName)
 
 	/*testString := "I, the $ADJ $NOUN wish to $VERB many $ADJ $ADJ $NOUNS"
 	for i := 0; i < 10; i++ {
@@ -205,28 +205,50 @@ func main() {
 
 	}*/
 
-	dc, err := discordgo.New("Bot " + os.Getenv("WB_DC_TOKEN"))
+	setupDiscordSession()
+	addDiscordHandlers()
+	openDiscordConnection()
+
+	registerDiscordCommands()
+
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+	<-sc
+
+	if *unregisterCommands {
+		unregisterDiscordCommands()
+	}
+
+	closeDiscordConnection()
+}
+
+func setupDiscordSession() {
+	dc, err = discordgo.New("Bot " + os.Getenv("WB_DC_TOKEN"))
 	if err != nil {
 		log.Error("Couldn't set up the Discord session", err)
 		return
 	}
+	dc.Identify.Intents = discordgo.IntentGuildMessages | discordgo.IntentsDirectMessages
+}
 
+func addDiscordHandlers() {
 	dc.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
 			h(s, i)
 		}
 	})
+}
 
-	dc.Identify.Intents = discordgo.IntentGuildMessages | discordgo.IntentsDirectMessages
-
+func openDiscordConnection() {
 	err = dc.Open()
 	if err != nil {
 		log.Error("Error opening connection", err)
 		return
 	}
-
 	log.Info(fmt.Sprintf("%s is running with the username '%s' and ID '%s'", customs.BotName, dc.State.User.Username, dc.State.User.ID))
+}
 
+func registerDiscordCommands() {
 	log.Info("Registering commands with the Discord API")
 	registeredCommands := make([]*discordgo.ApplicationCommand, len(botCommands))
 	for i, v := range botCommands {
@@ -237,24 +259,23 @@ func main() {
 		registeredCommands[i] = cmd
 	}
 
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
-	<-sc
+}
 
-	if *unregisterCommands {
-		log.Info("Unregistering commands...")
-		commandsToRemove, err := dc.ApplicationCommands(dc.State.User.ID, "")
+func unregisterDiscordCommands() {
+	log.Info("Unregistering commands...")
+	commandsToRemove, err := dc.ApplicationCommands(dc.State.User.ID, "")
+	if err != nil {
+		log.Error("Could not get registered commands")
+	}
+	for _, c := range commandsToRemove {
+		err := dc.ApplicationCommandDelete(dc.State.User.ID, "", c.ID)
 		if err != nil {
-			log.Error("Could not get registered commands")
-		}
-		for _, c := range commandsToRemove {
-			err := dc.ApplicationCommandDelete(dc.State.User.ID, "", c.ID)
-			if err != nil {
-				log.Error(fmt.Sprintf("Cannot delete '%s' command: %s", c.Name, err))
-			}
+			log.Error(fmt.Sprintf("Cannot delete '%s' command: %s", c.Name, err))
 		}
 	}
+}
 
+func closeDiscordConnection() {
 	log.Info("Gracefully shutting down")
 	err = dc.Close()
 	if err != nil {
