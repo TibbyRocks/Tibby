@@ -11,8 +11,8 @@ type Randomizer struct {
 }
 
 // Appends a string to the randomizer slice
-func (r *Randomizer) Append(appendable_items ...string) {
-	r.items = append(r.items, appendable_items...)
+func (r *Randomizer) Append(appendableItems ...string) {
+	r.items = append(r.items, appendableItems...)
 }
 
 /*
