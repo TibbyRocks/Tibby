@@ -31,7 +31,6 @@ func init() {
 }
 
 func init() {
-	pluralNouns.Append()
 	pluralNouns.Fill("customizations/pluralnouns.txt", true)
 	verbs.Fill("customizations/verbs.txt", true)
 	adjectives.Fill("customizations/adjectives.txt", true)
@@ -40,7 +39,6 @@ func init() {
 	fruit.Fill("customizations/fruit.txt", true)
 	singularNouns.Combine(&animals, &fruit)
 
-	//adjectives.Append("blue", "cute", "wet", "gassy")
 	thirdPersonVerbs.Append("walks", "jumps", "cooks", "drives", "swims")
 }
 
