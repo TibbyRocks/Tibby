@@ -25,11 +25,7 @@ func ShakeTheBall(i *discordgo.InteractionCreate) string {
 	var question string
 	ballResponse := responses.Random()
 
-	if i.User != nil {
-		shaker = i.User.Username
-	} else {
-		shaker = i.Member.Nick
-	}
+	shaker = utils.GetNickFromInteraction(i)
 
 	if val, ok := optionMap["question"]; ok {
 		question = val.StringValue()

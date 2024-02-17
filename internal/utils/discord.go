@@ -22,8 +22,10 @@ func GetNickFromInteraction(i *discordgo.InteractionCreate) string {
 	var username string
 	if i.User != nil {
 		username = i.User.Username
-	} else {
+	} else if i.Member.Nick != "" {
 		username = i.Member.Nick
+	} else {
+		username = i.Member.User.Username
 	}
 	return username
 }
