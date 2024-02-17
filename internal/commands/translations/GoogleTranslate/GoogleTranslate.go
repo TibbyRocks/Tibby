@@ -42,6 +42,7 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 	if fromLang != "" {
 		q.Add("source", fromLang)
 	}
+	q.Add("format", "text")
 	q.Add("q", translatable)
 	q.Add("target", toLang)
 	reqUrl.RawQuery = q.Encode()
