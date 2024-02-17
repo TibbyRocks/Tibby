@@ -9,7 +9,7 @@ func FileToSlice(inputFile string) []string {
 	var lines []string
 	file, err := os.Open(inputFile)
 	if err != nil {
-		log.Error(err.Error())
+		Log.Error(err.Error())
 	}
 	defer file.Close()
 
@@ -19,7 +19,7 @@ func FileToSlice(inputFile string) []string {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Error(err.Error())
+		Log.Error(err.Error())
 	}
 
 	return lines

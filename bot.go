@@ -25,7 +25,7 @@ var (
 	log                = utils.Log
 	unregisterCommands = flag.Bool("unregister", false, "Use this flag to unregister all registered bot commands")
 	debugMode          = flag.Bool("debug", false, "Use this flag to enable debug mode")
-	customs            = utils.BotCustoms
+	customs            = &utils.BotCustoms
 	dc                 *discordgo.Session
 	err                error
 )
@@ -193,10 +193,10 @@ func init() {
 	} else {
 		log.Debug("Loaded .env file(s)")
 	}
+	utils.LoadCustoms()
 }
 
 func main() {
-
 	log.Info("Starting " + customs.BotName)
 
 	setupDiscordSession()
