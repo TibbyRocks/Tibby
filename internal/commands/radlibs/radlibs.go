@@ -59,7 +59,7 @@ func replaceRadlibToken(token string) string {
 	token = strings.ReplaceAll(token, "$FRUIT", fruit.Random())
 	token = strings.ReplaceAll(token, "$NOUNS", pluralNouns.Random())
 	token = strings.ReplaceAll(token, "$NOUN", singularNouns.Random())
-	token = strings.ReplaceAll(token, "$VERBS", gerunds.Random())
+	token = strings.ReplaceAll(token, "$VERBING", gerunds.Random())
 	token = strings.ReplaceAll(token, "$VERB", verbs.Random())
 	token = strings.ReplaceAll(token, "$ADJ", adjectives.Random())
 	return token
