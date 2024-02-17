@@ -13,14 +13,14 @@ import (
 type Randomizer = types.Randomizer
 
 var (
-	singularNouns    Randomizer
-	pluralNouns      Randomizer
-	verbs            Randomizer
-	adjectives       Randomizer
-	thirdPersonVerbs Randomizer
-	animals          Randomizer
-	fruit            Randomizer
-	log              = utils.Log
+	singularNouns Randomizer
+	pluralNouns   Randomizer
+	verbs         Randomizer
+	adjectives    Randomizer
+	animals       Randomizer
+	fruit         Randomizer
+	gerunds       Randomizer
+	log           = utils.Log
 )
 
 func init() {
@@ -38,8 +38,7 @@ func init() {
 	animals.Fill("customizations/animals.txt", true)
 	fruit.Fill("customizations/fruit.txt", true)
 	singularNouns.Combine(&animals, &fruit)
-
-	thirdPersonVerbs.Append("walks", "jumps", "cooks", "drives", "swims")
+	gerunds.Fill("customizations/gerunds.txt", true)
 }
 
 // This function splits up the message string and loops over every string
@@ -60,7 +59,7 @@ func replaceRadlibToken(token string) string {
 	token = strings.ReplaceAll(token, "$FRUIT", fruit.Random())
 	token = strings.ReplaceAll(token, "$NOUNS", pluralNouns.Random())
 	token = strings.ReplaceAll(token, "$NOUN", singularNouns.Random())
-	token = strings.ReplaceAll(token, "$VERBS", thirdPersonVerbs.Random())
+	token = strings.ReplaceAll(token, "$VERBS", gerunds.Random())
 	token = strings.ReplaceAll(token, "$VERB", verbs.Random())
 	token = strings.ReplaceAll(token, "$ADJ", adjectives.Random())
 	return token
