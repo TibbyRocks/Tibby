@@ -39,7 +39,7 @@ var (
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
 					Name:        "msg",
-					Description: "Message with the tokens you want to batlib",
+					Description: "Message with the tokens you want to radlib",
 					Required:    true,
 				},
 			},
