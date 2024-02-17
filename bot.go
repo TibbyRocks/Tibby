@@ -222,7 +222,7 @@ func setupDiscordSession() {
 		log.Error("Couldn't set up the Discord session", err)
 		return
 	}
-	dc.Identify.Intents = discordgo.IntentGuildMessages | discordgo.IntentsDirectMessages
+	dc.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 }
 
 func addDiscordHandlers() {
