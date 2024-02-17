@@ -2,6 +2,7 @@ package types
 
 import (
 	"math/rand"
+	"slices"
 
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
@@ -31,7 +32,7 @@ func (r *Randomizer) Fill(filepath string, clear bool) {
 
 func (destRand *Randomizer) Combine(srcRand ...*Randomizer) {
 	for _, appendableRand := range srcRand {
-		destRand.items = append(destRand.items, appendableRand.items...)
+		destRand.items = slices.Concat(destRand.items, appendableRand.items)
 	}
 
 }
