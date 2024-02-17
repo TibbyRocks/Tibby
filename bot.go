@@ -33,7 +33,7 @@ var (
 var (
 	botCommands = []*discordgo.ApplicationCommand{
 		{
-			Name:        "batlibs",
+			Name:        "radlibs",
 			Description: "Replaces certain tokens with words",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
@@ -75,7 +75,7 @@ var (
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"batlibs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"radlibs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 			libbedMsg := radlibs.DoRadlibs(i)
 
