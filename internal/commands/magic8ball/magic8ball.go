@@ -15,7 +15,7 @@ var (
 )
 
 func init() {
-	responses.Fill("data/8ballresponses.txt", true)
+	responses.Fill("customizations/8ballresponses.txt", true)
 }
 
 func ShakeTheBall(i *discordgo.InteractionCreate) string {

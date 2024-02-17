@@ -10,8 +10,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"github.com/tibbyrocks/tibby/internal/commands/batlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
+	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/types"
@@ -77,7 +77,7 @@ var (
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"batlibs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
-			libbedMsg := batlibs.DoBatlibs(i)
+			libbedMsg := radlibs.DoRadlibs(i)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -86,7 +86,7 @@ var (
 						{
 							Description: libbedMsg,
 							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s batlibs!", customs.BotName),
+								Name:    fmt.Sprintf("%s RadLibs 😎", customs.BotName),
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
@@ -198,12 +198,6 @@ func init() {
 func main() {
 
 	log.Info("Starting " + customs.BotName)
-
-	/*testString := "I, the $ADJ $NOUN wish to $VERB many $ADJ $ADJ $NOUNS"
-	for i := 0; i < 10; i++ {
-		log.Info(commands.ProcessMessage((testString)))
-
-	}*/
 
 	setupDiscordSession()
 	addDiscordHandlers()

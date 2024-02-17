@@ -1,4 +1,4 @@
-package batlibs
+package radlibs
 
 import (
 	"fmt"
@@ -24,19 +24,20 @@ var (
 )
 
 func init() {
-	commands.BotCommands["batlibs"] = &commands.Command{
-		Name: "Batlibs",
-		Help: "Does Batlibs",
+	commands.BotCommands["radlibs"] = &commands.Command{
+		Name: "Radlibs",
+		Help: "Does Radlibs",
 	}
 }
 
 func init() {
-	pluralNouns.Append("foxes", "dogs", "cats", "houses", "men")
-	verbs.Fill("./data/verbs.txt", true)
-	adjectives.Fill("./data/adjectives.txt", true)
-	singularNouns.Fill("./data/singularnouns.txt", true)
-	animals.Fill("./data/animals.txt", true)
-	fruit.Fill("./data/fruit.txt", true)
+	pluralNouns.Append()
+	pluralNouns.Fill("customizations/pluralnouns.txt", true)
+	verbs.Fill("customizations/verbs.txt", true)
+	adjectives.Fill("customizations/adjectives.txt", true)
+	singularNouns.Fill("customizations/singularnouns.txt", true)
+	animals.Fill("customizations/animals.txt", true)
+	fruit.Fill("customizations/fruit.txt", true)
 	singularNouns.Combine(&animals, &fruit)
 
 	//adjectives.Append("blue", "cute", "wet", "gassy")
@@ -44,19 +45,19 @@ func init() {
 }
 
 // This function splits up the message string and loops over every string
-func DoBatlibs(i *discordgo.InteractionCreate) string {
+func DoRadlibs(i *discordgo.InteractionCreate) string {
 	optionMap := utils.GetOptionsFromInteraction(i)
 	log.Info(fmt.Sprintf("User '%s' called the nounverb command with text '%s'", utils.GetUsernameFromInteraction(i), optionMap["msg"].StringValue()))
 	message := optionMap["msg"].StringValue()
 	splitMessage := strings.Split(message, " ")
 	var workSlice []string
 	for _, s := range splitMessage {
-		workSlice = append(workSlice, replaceBatlibToken(s))
+		workSlice = append(workSlice, replaceRadlibToken(s))
 	}
 	return strings.Join(workSlice, " ")
 }
 
-func replaceBatlibToken(token string) string {
+func replaceRadlibToken(token string) string {
 	token = strings.ReplaceAll(token, "$ANIMAL", animals.Random())
 	token = strings.ReplaceAll(token, "$FRUIT", fruit.Random())
 	token = strings.ReplaceAll(token, "$NOUNS", pluralNouns.Random())

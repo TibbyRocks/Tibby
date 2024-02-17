@@ -17,7 +17,7 @@ type CustomizationOptions struct {
 var BotCustoms CustomizationOptions
 
 func init() {
-	customsFile, err := os.Open("customization.json")
+	customsFile, err := os.Open("customizations/botproperties.json")
 	if err != nil {
 		Log.Error("Couldn't load customizations file: " + err.Error())
 	}
