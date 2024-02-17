@@ -15,16 +15,17 @@ type CustomizationOptions struct {
 }
 
 var BotCustoms CustomizationOptions
+var log = Log
 
 func init() {
 	customsFile, err := os.Open("customizations/botproperties.json")
 	if err != nil {
-		Log.Error("Couldn't load customizations file: " + err.Error())
+		log.Error("Couldn't load customizations file: " + err.Error())
 	}
 
 	jsonParser := json.NewDecoder(customsFile)
 	if err = jsonParser.Decode(&BotCustoms); err != nil {
-		Log.Error("Couldn't parse customizations file: " + err.Error())
+		log.Error("Couldn't parse customizations file: " + err.Error())
 	}
 }
 
@@ -32,7 +33,7 @@ func GetCdnUri(fileName string) string {
 	if val, ok := BotCustoms.CDN.Files[fileName]; ok {
 		return BotCustoms.CDN.BaseURL + val
 	} else {
-		Log.Error("Couldn't file an customization entry for the file " + fileName)
+		log.Error("Couldn't file an customization entry for the file " + fileName)
 	}
 	return ""
 }
