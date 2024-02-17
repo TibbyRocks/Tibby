@@ -20,6 +20,7 @@ var (
 	animals       Randomizer
 	fruit         Randomizer
 	gerunds       Randomizer
+	adverbs       Randomizer
 	log           = utils.Log
 )
 
@@ -39,6 +40,7 @@ func init() {
 	fruit.Fill("customizations/fruit.txt", true)
 	singularNouns.Combine(&animals, &fruit)
 	gerunds.Fill("customizations/gerunds.txt", true)
+	adverbs.Fill("customizations/adverbs.txt", true)
 }
 
 // This function splits up the message string and loops over every string
@@ -62,5 +64,6 @@ func replaceRadlibToken(token string) string {
 	token = strings.ReplaceAll(token, "$VERBING", gerunds.Random())
 	token = strings.ReplaceAll(token, "$VERB", verbs.Random())
 	token = strings.ReplaceAll(token, "$ADJ", adjectives.Random())
+	token = strings.ReplaceAll(token, "$ADVERB", adverbs.Random())
 	return token
 }
