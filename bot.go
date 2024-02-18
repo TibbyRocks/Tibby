@@ -14,6 +14,7 @@ import (
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
+	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
 	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
@@ -71,6 +72,18 @@ var (
 		{
 			Name:        "docs",
 			Description: fmt.Sprintf("Get the %s docs", customs.BotName),
+		},
+		{
+			Name:        "wisdom",
+			Description: "Get a (random) quote",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "quoteid",
+					Description: "quotable.io quote ID",
+					Required:    false,
+				},
+			},
 		},
 	}
 
@@ -172,6 +185,25 @@ var (
 							Description: fmt.Sprintf("[Read the %s docs here](%s)", customs.BotName, customs.DocsURL),
 							Author: &discordgo.MessageEmbedAuthor{
 								Name:    fmt.Sprintf("%s docs", customs.BotName),
+								IconURL: s.State.User.AvatarURL("1024"),
+							},
+						},
+					},
+				},
+			})
+		},
+		"wisdom": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+
+			quoteMsg := wisdom.GetQuote(i)
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Description: quoteMsg,
+							Author: &discordgo.MessageEmbedAuthor{
+								Name:    fmt.Sprintf("%s Wisdom", customs.BotName),
 								IconURL: s.State.User.AvatarURL("1024"),
 							},
 						},
