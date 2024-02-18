@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -54,4 +55,10 @@ func ReturnInteractionMessageUrl(i *discordgo.InteractionCreate) string {
 
 	return url
 
+}
+
+func HexToDec(hex string) int {
+	dec, _ := strconv.ParseInt(hex, 16, 32)
+
+	return int(dec)
 }

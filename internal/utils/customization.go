@@ -6,9 +6,10 @@ import (
 )
 
 type CustomizationOptions struct {
-	BotName string `json:"BotName"`
-	DocsURL string `json:"DocsURL"`
-	CDN     struct {
+	BotName     string `json:"BotName"`
+	RootCommand string `json:"RootCommand"`
+	DocsURL     string `json:"DocsURL"`
+	CDN         struct {
 		BaseURL string
 		Files   map[string]string
 	}

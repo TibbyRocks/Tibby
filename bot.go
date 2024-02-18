@@ -13,6 +13,7 @@ import (
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
+	"github.com/tibbyrocks/tibby/internal/commands/tibbycmds"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
 	"github.com/tibbyrocks/tibby/internal/types"
@@ -70,10 +71,6 @@ var (
 			Type: discordgo.MessageApplicationCommand,
 		},
 		{
-			Name:        "docs",
-			Description: fmt.Sprintf("Get the %s docs", customs.BotName),
-		},
-		{
 			Name:        "wisdom",
 			Description: "Get a (random) quote",
 			Options: []*discordgo.ApplicationCommandOption{
@@ -82,6 +79,22 @@ var (
 					Name:        "quoteid",
 					Description: "quotable.io quote ID",
 					Required:    false,
+				},
+			},
+		},
+		{
+			Name:        "tibby",
+			Description: fmt.Sprintf("General commands for %s", customs.BotName),
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Name:        "docs",
+					Description: fmt.Sprintf("Get the %s docs", customs.BotName),
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+				},
+				{
+					Name:        "info",
+					Description: fmt.Sprintf("Get the %s runtime information", customs.BotName),
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
 				},
 			},
 		},
@@ -175,23 +188,6 @@ var (
 				},
 			})
 		},
-		"docs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Flags: discordgo.MessageFlagsEphemeral,
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: fmt.Sprintf("[Read the %s docs here](%s)", customs.BotName, customs.DocsURL),
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s docs", customs.BotName),
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
 		"wisdom": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 			quoteMsg := wisdom.GetQuote(i)
@@ -210,6 +206,47 @@ var (
 					},
 				},
 			})
+		},
+		"tibby": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			options := i.ApplicationCommandData().Options
+
+			switch options[0].Name {
+			case "docs":
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Flags: discordgo.MessageFlagsEphemeral,
+						Embeds: []*discordgo.MessageEmbed{
+							{
+								Description: fmt.Sprintf("[Read the %s docs here](%s)", customs.BotName, customs.DocsURL),
+								Author: &discordgo.MessageEmbedAuthor{
+									Name:    fmt.Sprintf("%s docs", customs.BotName),
+									IconURL: s.State.User.AvatarURL("1024"),
+								},
+							},
+						},
+					},
+				})
+			case "info":
+				infoMsg := tibbycmds.GetInfo(i, s)
+
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Flags: discordgo.MessageFlagsEphemeral,
+						Embeds: []*discordgo.MessageEmbed{
+							{
+								Color:       int(utils.HexToDec("BFEA7C")),
+								Description: infoMsg,
+								Author: &discordgo.MessageEmbedAuthor{
+									Name:    fmt.Sprintf("%s Info", customs.BotName),
+									IconURL: s.State.User.AvatarURL("1024"),
+								},
+							},
+						},
+					},
+				})
+			}
 		},
 	}
 )
