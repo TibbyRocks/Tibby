@@ -2,6 +2,7 @@ package translations
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/bwmarrin/discordgo"
 	googletranslate "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslate"
@@ -46,13 +47,13 @@ func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
 	
 	[Go to the original message](%v)
 	`
-	//tl := msAnyToLanguage(msg.Content, "en")
-	translation, err := Translators["googlev3"].Translate("", "en", msg.Content)
+
+	translation, err := Translators[os.Getenv("WB_TRANSLATOR")].Translate("", "en", msg.Content)
 	if err != nil {
 		return fmt.Sprintf(erroredTranslations, msgUrl)
 	}
 
-	translationWithLanguages := Translators["microsoft"].FillLanguagesFromCodes(translation)
+	translationWithLanguages := Translators[os.Getenv("WB_LANGUAGELOOKUP")].FillLanguagesFromCodes(translation)
 
 	return buildMessage(translationWithLanguages, msgUrl)
 }

@@ -3,6 +3,7 @@ package googletranslatev3
 import (
 	"context"
 	"fmt"
+	"os"
 
 	translate "cloud.google.com/go/translate/apiv3"
 	"cloud.google.com/go/translate/apiv3/translatepb"
@@ -11,8 +12,7 @@ import (
 )
 
 var (
-	ProjectID  string = "wombot-408401"
-	log               = utils.Log
+	log        = utils.Log
 	Translator types.Translator
 )
 
@@ -33,7 +33,7 @@ func Translate(fromLang string, toLang string, translatable string) (types.Singl
 	defer client.Close()
 
 	req := &translatepb.TranslateTextRequest{
-		Parent:             fmt.Sprintf("projects/%s/locations/global", ProjectID),
+		Parent:             fmt.Sprintf("projects/%s/locations/global", os.Getenv("GOOGLE_PROJECT")),
 		SourceLanguageCode: fromLang,
 		TargetLanguageCode: toLang,
 		MimeType:           "text/plain",
