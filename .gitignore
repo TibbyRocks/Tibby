@@ -2,3 +2,4 @@
 .vscode
 customizations/botproperties.json
 /bin
+googlecloudcreds.json

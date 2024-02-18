@@ -126,7 +126,7 @@ func msGetLanguages() map[string]Language {
 
 }
 
-func Translate(fromLang string, toLang string, translatable string) types.SingleTranslation {
+func Translate(fromLang string, toLang string, translatable string) (types.SingleTranslation, error) {
 	key := os.Getenv("WB_MS_TRANSLATE_KEY")
 	region := os.Getenv("WB_MS_TRANSLATE_REGION")
 	reqUrl, _ := url.Parse(microsoft_endpoint + "/translate")
@@ -145,6 +145,8 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 	req, err := http.NewRequest("POST", reqUrl.String(), bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Error("1" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	req.Header.Add("Ocp-Apim-Subscription-Key", key)
@@ -154,11 +156,15 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Error("2" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	var result []TranslationResult
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
 		log.Error("3" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	finalTranslation := types.SingleTranslation{
@@ -168,6 +174,6 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 		OriginalText:   translatable,
 	}
 
-	return finalTranslation
+	return finalTranslation, nil
 
 }
