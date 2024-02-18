@@ -57,8 +57,17 @@ If the language is not supported you get an empty slice.
 func GetLanguageByCode(code string) []string {
 	var response []string
 
+	var overrideMap map[string]string = make(map[string]string)
+	overrideMap["zh-TW"] = "zh-Hant"
+
+	if val, ok := overrideMap[code]; ok {
+		code = val
+	}
+
 	if val, ok := languageMap[code]; ok {
 		response = append(response, val.name, val.nativeName)
+	} else {
+		response = append(response, "unsupported "+code, "unsupported "+code)
 	}
 
 	return response
