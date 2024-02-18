@@ -1,7 +1,7 @@
 package types
 
 type Translator struct {
-	Translate              func(fromLang string, toLang string, translatable string) SingleTranslation
+	Translate              func(fromLang string, toLang string, translatable string) (SingleTranslation, error)
 	FillLanguagesFromCodes func(SingleTranslation) SingleTranslation
 }
 

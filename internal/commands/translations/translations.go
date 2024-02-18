@@ -2,9 +2,11 @@ package translations
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/bwmarrin/discordgo"
 	googletranslate "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslate"
+	googletranslatev3 "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslateV3"
 	microsofttranslate "github.com/tibbyrocks/tibby/internal/commands/translations/MicrosoftTranslate"
 	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
@@ -26,6 +28,7 @@ var (
 func init() {
 	Translators["microsoft"] = microsofttranslate.Translator
 	Translators["google"] = googletranslate.Translator
+	Translators["googlev3"] = googletranslatev3.Translator
 }
 
 func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
@@ -40,10 +43,17 @@ func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
 		return fmt.Sprintf("I can't translate messages without text, sorry.\n\n[Go to the original message](%v)", msgUrl)
 	}
 
-	//tl := msAnyToLanguage(msg.Content, "en")
-	translation := Translators["google"].Translate("", "en", msg.Content)
+	var erroredTranslations string = `Failed to translate
+	
+	[Go to the original message](%v)
+	`
 
-	translationWithLanguages := Translators["microsoft"].FillLanguagesFromCodes(translation)
+	translation, err := Translators[os.Getenv("WB_TRANSLATOR")].Translate("", "en", msg.Content)
+	if err != nil {
+		return fmt.Sprintf(erroredTranslations, msgUrl)
+	}
+
+	translationWithLanguages := Translators[os.Getenv("WB_LANGUAGELOOKUP")].FillLanguagesFromCodes(translation)
 
 	return buildMessage(translationWithLanguages, msgUrl)
 }

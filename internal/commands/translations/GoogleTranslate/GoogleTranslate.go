@@ -35,7 +35,7 @@ type translationResult struct {
 	} `json:"data"`
 }
 
-func Translate(fromLang string, toLang string, translatable string) types.SingleTranslation {
+func Translate(fromLang string, toLang string, translatable string) (types.SingleTranslation, error) {
 	key := os.Getenv("WB_GOOGLE_API_KEY")
 	reqUrl, _ := url.Parse(google_endpoint + "/language/translate/v2")
 	q := reqUrl.Query()
@@ -50,6 +50,8 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 	req, err := http.NewRequest("POST", reqUrl.String(), nil)
 	if err != nil {
 		log.Error("1" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	req.Header.Add("x-goog-api-key", key)
@@ -58,11 +60,15 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Error("2" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	var result translationResult
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
 		log.Error("3" + err.Error())
+		var emptyResponse types.SingleTranslation
+		return emptyResponse, err
 	}
 
 	finalTranslation := types.SingleTranslation{
@@ -74,6 +80,6 @@ func Translate(fromLang string, toLang string, translatable string) types.Single
 		OriginalText:   translatable,
 	}
 
-	return finalTranslation
+	return finalTranslation, nil
 
 }
