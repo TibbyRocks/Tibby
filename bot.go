@@ -27,7 +27,7 @@ var (
 	log                = utils.Log
 	unregisterCommands = flag.Bool("unregister", false, "Use this flag to unregister all registered bot commands")
 	debugMode          = flag.Bool("debug", false, "Use this flag to enable debug mode")
-	customs            = &utils.BotCustoms
+	customs            = utils.GetCustoms()
 	dc                 *discordgo.Session
 	err                error
 )
@@ -83,7 +83,7 @@ var (
 			},
 		},
 		{
-			Name:        "tibby",
+			Name:        customs.RootCommand,
 			Description: fmt.Sprintf("General commands for %s", customs.BotName),
 			Options: []*discordgo.ApplicationCommandOption{
 				{
@@ -207,7 +207,7 @@ var (
 				},
 			})
 		},
-		"tibby": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		customs.RootCommand: func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			options := i.ApplicationCommandData().Options
 
 			switch options[0].Name {
@@ -262,7 +262,6 @@ func init() {
 	} else {
 		log.Debug("Loaded .env file(s)")
 	}
-	utils.LoadCustoms()
 }
 
 func main() {
