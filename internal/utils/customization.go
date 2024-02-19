@@ -38,7 +38,7 @@ func GetCdnUri(fileName string) string {
 	if val, ok := BotCustoms.CDN.Files[fileName]; ok {
 		return BotCustoms.CDN.BaseURL + val
 	} else {
-		Log.Error("Couldn't file an customization entry for the file " + fileName)
+		Log.Error("Couldn't find an customization entry for the file " + fileName)
 	}
 	return ""
 }
