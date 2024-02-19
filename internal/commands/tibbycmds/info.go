@@ -4,20 +4,28 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 var version string
+var appStart time.Time
 
 func GetInfo(i *discordgo.InteractionCreate, s *discordgo.Session) string {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	return fmt.Sprintf(infoFormat, version, os.Getenv("WB_TRANSLATOR"), os.Getenv("WB_LANGUAGELOOKUP"), bToMb(m.Alloc), bToMb(m.TotalAlloc), bToMb(m.Sys), s.HeartbeatLatency().Milliseconds())
+	uptime := time.Since(appStart).Truncate(time.Second).String()
+	return fmt.Sprintf(infoFormat, version, uptime, appStart.Format("02-01-2006 15:04:05 MST"), os.Getenv("WB_TRANSLATOR"), os.Getenv("WB_LANGUAGELOOKUP"), bToMb(m.Alloc), bToMb(m.TotalAlloc), bToMb(m.Sys), s.HeartbeatLatency().Milliseconds())
+}
+
+func RegisterAppStart() {
+	appStart = time.Now()
 }
 
 var infoFormat string = `
 	Application Version: %s
+	Uptime: %s (since %s)
 	
 	**Translations**
 	Translator: %s
