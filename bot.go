@@ -268,6 +268,7 @@ func init() {
 func main() {
 	log.Info("Starting " + customs.BotName)
 
+	tibbycmds.RegisterAppStart()
 	setupDiscordSession()
 	addDiscordHandlers()
 	openDiscordConnection()
