@@ -52,7 +52,17 @@ func GetOptionsStringsFromInteraction(i *discordgo.InteractionCreate) map[string
 	options := i.ApplicationCommandData().Options
 	optionMap := make(map[string]string, len(options))
 	for _, opt := range options {
-		optionMap[opt.Name] = opt.StringValue()
+		switch opt.Type {
+		case discordgo.ApplicationCommandOptionString:
+			optionMap[opt.Name] = opt.StringValue()
+		case discordgo.ApplicationCommandOptionSubCommand:
+			optionMap["subcommand"] = opt.Name
+		case discordgo.ApplicationCommandOptionSubCommandGroup:
+			optionMap["subcommandgroup"] = opt.Name
+		default:
+			optionMap[opt.Name] = opt.Type.String()
+		}
+
 	}
 	return optionMap
 }
