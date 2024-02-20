@@ -1,0 +1,57 @@
+time=2024-02-20T19:47:02.502+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:47:03.076+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:47:03.076+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:48:40.651+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:48:42.983+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:48:43.509+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:48:43.509+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:48:52.515+01:00 level=INFO msg="Command executed" cmd=tibby userID=77183698721570816 username=mozoa
+time=2024-02-20T19:49:37.985+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:49:49.608+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:49:50.234+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:49:50.235+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:49:56.115+01:00 level=INFO msg="Command executed" cmd=tibby userID=77183698721570816 username=mozoa
+time=2024-02-20T19:50:03.251+01:00 level=INFO msg="Command executed" cmd=tibby userID=77183698721570816 username=mozoa
+time=2024-02-20T19:51:07.565+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:51:09.991+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:51:10.534+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:51:10.534+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:51:23.684+01:00 level=INFO msg="Command executed" cmd=tibby args=[0xc00018ec80] userID=77183698721570816 username=mozoa
+time=2024-02-20T19:53:09.013+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:53:11.484+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:53:12.063+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:53:12.063+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:53:18.882+01:00 level=INFO msg="Command executed" cmd=tibby args=map[info:0xc0002fc0a0] userID=77183698721570816 username=mozoa
+time=2024-02-20T19:54:56.413+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:54:59.031+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:54:59.621+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:54:59.621+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:55:06.139+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T19:55:06.139+01:00 level=INFO msg="Command executed" cmd=8ball args=map[] userID=77183698721570816 username=mozoa
+time=2024-02-20T19:55:38.108+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T19:55:38.109+01:00 level=INFO msg="Command executed" cmd=8ball args=map[question:0xc0001224b0] userID=77183698721570816 username=mozoa
+time=2024-02-20T19:59:12.772+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T19:59:17.606+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T19:59:18.168+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T19:59:18.168+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T19:59:28.614+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T19:59:28.614+01:00 level=INFO msg="Command executed" cmd=8ball args=map[question:hello?] userID=77183698721570816 username=mozoa
+time=2024-02-20T20:00:06.815+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T20:00:06.816+01:00 level=INFO msg="Command executed" cmd=8ball args="map[question:Am I great?]" userID=77183698721570816 username=mozoa
+time=2024-02-20T20:14:24.655+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T20:14:26.984+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T20:14:27.611+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T20:14:27.611+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T20:14:37.809+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T20:14:37.809+01:00 level=INFO msg="Command executed" cmd=8ball !BADKEY=map[] userID=77183698721570816 username=mozoa
+time=2024-02-20T20:15:11.936+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T20:15:14.437+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T20:15:14.976+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T20:15:14.976+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T20:15:21.669+01:00 level=INFO msg="User 'mozoa' called the 8ball command"
+time=2024-02-20T20:15:21.669+01:00 level=INFO msg="Command executed" cmd=8ball userID=77183698721570816 username=mozoa !BADKEY=map[]
+time=2024-02-20T20:19:29.655+01:00 level=INFO msg="Gracefully shutting down"
+time=2024-02-20T20:37:34.100+01:00 level=INFO msg="Starting Tibby"
+time=2024-02-20T20:37:34.700+01:00 level=INFO msg="Tibby is running with the username 'Tibby (dev)' and ID '986019907030380564'"
+time=2024-02-20T20:37:34.700+01:00 level=INFO msg="Registering commands with the Discord API"
+time=2024-02-20T20:38:35.235+01:00 level=INFO msg="Gracefully shutting down"
