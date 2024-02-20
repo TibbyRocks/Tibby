@@ -19,6 +19,7 @@ func init() {
 }
 
 func ShakeTheBall(i *discordgo.InteractionCreate) string {
+	utils.LogCmd(i)
 	optionMap := utils.GetOptionsFromInteraction(i)
 
 	var shaker string

@@ -74,6 +74,7 @@ func getQuoteByID(id string) quote {
 }
 
 func GetQuote(i *discordgo.InteractionCreate) string {
+	utils.LogCmd(i)
 	optionMap := utils.GetOptionsFromInteraction(i)
 	var quoteID string
 	var result quote

@@ -121,8 +121,6 @@ var (
 			})
 		},
 		"8ball": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
-			log.Info(fmt.Sprintf("User '%s' called the 8ball command", utils.GetUsernameFromInteraction(i)))
 			ballResponse := magic8ball.ShakeTheBall(i)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -208,45 +206,7 @@ var (
 			})
 		},
 		customs.RootCommand: func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			options := i.ApplicationCommandData().Options
-
-			switch options[0].Name {
-			case "docs":
-				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-					Type: discordgo.InteractionResponseChannelMessageWithSource,
-					Data: &discordgo.InteractionResponseData{
-						Flags: discordgo.MessageFlagsEphemeral,
-						Embeds: []*discordgo.MessageEmbed{
-							{
-								Description: fmt.Sprintf("[Read the %s docs here](%s)", customs.BotName, customs.DocsURL),
-								Author: &discordgo.MessageEmbedAuthor{
-									Name:    fmt.Sprintf("%s docs", customs.BotName),
-									IconURL: s.State.User.AvatarURL("1024"),
-								},
-							},
-						},
-					},
-				})
-			case "info":
-				infoMsg := tibbycmds.GetInfo(i, s)
-
-				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-					Type: discordgo.InteractionResponseChannelMessageWithSource,
-					Data: &discordgo.InteractionResponseData{
-						Flags: discordgo.MessageFlagsEphemeral,
-						Embeds: []*discordgo.MessageEmbed{
-							{
-								Color:       int(utils.HexToDec("BFEA7C")),
-								Description: infoMsg,
-								Author: &discordgo.MessageEmbedAuthor{
-									Name:    fmt.Sprintf("%s Info", customs.BotName),
-									IconURL: s.State.User.AvatarURL("1024"),
-								},
-							},
-						},
-					},
-				})
-			}
+			tibbycmds.HandleRootCommand(i, s)
 		},
 	}
 )
