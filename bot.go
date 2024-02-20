@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
+	_ "github.com/tibbyrocks/tibby/internal/autoload"
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
@@ -255,12 +255,6 @@ func init() {
 	flag.Parse()
 	if *debugMode {
 		utils.LogLevel.Set(slog.LevelDebug)
-	}
-	err := godotenv.Load()
-	if err != nil {
-		log.Debug("Couldn't load .env, this is probably fine")
-	} else {
-		log.Debug("Loaded .env file(s)")
 	}
 }
 
