@@ -6,6 +6,8 @@ import (
 	"log/slog"
 	"os"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
@@ -22,7 +24,7 @@ func init() {
 		if err != nil && !os.IsExist(err) {
 			fmt.Println("Failed to create log directory: ", err.Error())
 		}
-		LogFileName := fmt.Sprintf("%s/%s-%s", logDir, "tibby", time.Now().Format("20060102"))
+		LogFileName := fmt.Sprintf("%s/%s-%s.%s", logDir, "tibby", time.Now().Format("20060102"), "log.json")
 		LogFile, err := os.OpenFile(LogFileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			fmt.Println("Failed to open log file: ", err.Error())
@@ -36,7 +38,12 @@ func init() {
 	opts := slog.HandlerOptions{
 		Level: LogLevel,
 	}
-	handler := slog.NewTextHandler(logOutputs, &opts)
+	handler := slog.NewJSONHandler(logOutputs, &opts)
 
 	Log = slog.New(handler)
+}
+
+func LogCmd(i *discordgo.InteractionCreate) {
+	user := GetUserobjectFromInteraction(i)
+	Log.Info("Command used", "Command", i.ApplicationCommandData().Name, "Args", GetOptionsStringsFromInteraction(i), "Username", user.Username, "UserID", user.ID)
 }

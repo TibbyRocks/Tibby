@@ -121,8 +121,6 @@ var (
 			})
 		},
 		"8ball": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
-			log.Info(fmt.Sprintf("User '%s' called the 8ball command", utils.GetUsernameFromInteraction(i)))
 			ballResponse := magic8ball.ShakeTheBall(i)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{

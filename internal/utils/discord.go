@@ -18,6 +18,14 @@ func GetUsernameFromInteraction(i *discordgo.InteractionCreate) string {
 	return username
 }
 
+func GetUserobjectFromInteraction(i *discordgo.InteractionCreate) *discordgo.User {
+	if i.User != nil {
+		return i.User
+	} else {
+		return i.Member.User
+	}
+}
+
 // Gets the nickname for the user that invoked the interaction in a guild if set, if not set or invoked in a direct message you get the username.
 func GetNickFromInteraction(i *discordgo.InteractionCreate) string {
 	var username string
@@ -36,6 +44,15 @@ func GetOptionsFromInteraction(i *discordgo.InteractionCreate) map[string]*disco
 	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 	for _, opt := range options {
 		optionMap[opt.Name] = opt
+	}
+	return optionMap
+}
+
+func GetOptionsStringsFromInteraction(i *discordgo.InteractionCreate) map[string]string {
+	options := i.ApplicationCommandData().Options
+	optionMap := make(map[string]string, len(options))
+	for _, opt := range options {
+		optionMap[opt.Name] = opt.StringValue()
 	}
 	return optionMap
 }

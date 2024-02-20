@@ -1,7 +1,6 @@
 package radlibs
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -45,8 +44,8 @@ func init() {
 
 // This function splits up the message string and loops over every string
 func DoRadlibs(i *discordgo.InteractionCreate) string {
+	utils.LogCmd(i)
 	optionMap := utils.GetOptionsFromInteraction(i)
-	log.Info(fmt.Sprintf("User '%s' called the nounverb command with text '%s'", utils.GetUsernameFromInteraction(i), optionMap["msg"].StringValue()))
 	message := optionMap["msg"].StringValue()
 	splitMessage := strings.Split(message, " ")
 	var workSlice []string

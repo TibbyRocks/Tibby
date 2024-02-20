@@ -32,6 +32,7 @@ func init() {
 }
 
 func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
+	utils.LogCmd(i)
 	msg := i.ApplicationCommandData().Resolved.Messages[i.ApplicationCommandData().TargetID]
 	msgUrl := utils.ReturnInteractionMessageUrl(i)
 

@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 var version string
 var appStart time.Time
 
 func GetInfo(i *discordgo.InteractionCreate, s *discordgo.Session) string {
+	utils.LogCmd(i)
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 	uptime := time.Since(appStart).Truncate(time.Second).String()

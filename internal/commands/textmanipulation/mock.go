@@ -9,6 +9,7 @@ import (
 )
 
 func MockText(i *discordgo.InteractionCreate) string {
+	utils.LogCmd(i)
 	msg := i.ApplicationCommandData().Resolved.Messages[i.ApplicationCommandData().TargetID]
 	input := msg.Content
 	msgUrl := utils.ReturnInteractionMessageUrl(i)
