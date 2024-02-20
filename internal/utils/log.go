@@ -5,7 +5,6 @@ import (
 	"io"
 	"log/slog"
 	"os"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -24,7 +23,7 @@ func init() {
 		if err != nil && !os.IsExist(err) {
 			fmt.Println("Failed to create log directory: ", err.Error())
 		}
-		LogFileName := fmt.Sprintf("%s/%s-%s.%s", logDir, "tibby", time.Now().Format("20060102"), "log.json")
+		LogFileName := fmt.Sprintf("%s/%s.%s", logDir, "tibby", "log.json")
 		LogFile, err := os.OpenFile(LogFileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			fmt.Println("Failed to open log file: ", err.Error())

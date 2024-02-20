@@ -2,6 +2,10 @@
  
 A Discord bot written in Go utilizing the DiscordGo library
 
+### Status checks
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TibbyRocks_Tibby&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TibbyRocks_Tibby) [![Go Report Card](https://goreportcard.com/badge/github.com/tibbyrocks/tibby)](https://goreportcard.com/report/github.com/tibbyrocks/tibby)
+
 
 ### Documentation
 
