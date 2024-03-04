@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
@@ -19,7 +20,48 @@ type quote struct {
 var (
 	quotehost string = "https://api.quotable.io"
 	log              = utils.Log
+	Commands  []commands.Command
+	customs   = utils.GetCustoms()
 )
+
+func init() {
+	Commands = append(Commands, commands.Command{
+		AppComm: &WisdomCommand,
+		Handler: WisdomCommandHandler,
+	})
+}
+
+var WisdomCommand = discordgo.ApplicationCommand{
+	Name:        "wisdom",
+	Description: "Get a (random) quote",
+	Options: []*discordgo.ApplicationCommandOption{
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "quoteid",
+			Description: "quotable.io quote ID",
+			Required:    false,
+		},
+	},
+}
+
+func WisdomCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	quoteMsg := GetQuote(i)
+
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: quoteMsg,
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    fmt.Sprintf("%s Wisdom", customs.BotName),
+						IconURL: s.State.User.AvatarURL("1024"),
+					},
+				},
+			},
+		},
+	})
+}
 
 func getRandomQuotes(amount int) []quote {
 	var quoteArray []quote

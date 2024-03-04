@@ -5,15 +5,46 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
+
+var UwuifyCommand = discordgo.ApplicationCommand{
+	Name: "UwUify",
+	Type: discordgo.MessageApplicationCommand,
+}
 
 type Randomizer = types.Randomizer
 
 var (
 	furryFlavourText Randomizer
+	Commands         []commands.Command
 )
+
+func init() {
+	Commands = append(Commands, commands.Command{
+		AppComm: &UwuifyCommand,
+		Handler: UwuifyCommandHandler,
+	})
+}
+
+func UwuifyCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: Uwuify(i),
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    "UwUify",
+						IconURL: s.State.User.AvatarURL("1024"),
+					},
+				},
+			},
+		},
+	})
+}
 
 func Uwuify(i *discordgo.InteractionCreate) string {
 	utils.LogCmd(i)

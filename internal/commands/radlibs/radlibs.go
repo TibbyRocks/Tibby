@@ -1,6 +1,7 @@
 package radlibs
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -20,14 +21,29 @@ var (
 	fruit         Randomizer
 	gerunds       Randomizer
 	adverbs       Randomizer
-	log           = utils.Log
+	Command       commands.Command
+	Commands      []commands.Command
+	customs       = utils.GetCustoms()
 )
 
+var RadLibsCommand = discordgo.ApplicationCommand{
+	Name:        "radlibs",
+	Description: "Replaces certain tokens with words",
+	Options: []*discordgo.ApplicationCommandOption{
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "msg",
+			Description: "Message with the tokens you want to radlib",
+			Required:    true,
+		},
+	},
+}
+
 func init() {
-	commands.BotCommands["radlibs"] = &commands.Command{
-		Name: "Radlibs",
-		Help: "Does Radlibs",
-	}
+	Commands = append(Commands, commands.Command{
+		AppComm: &RadLibsCommand,
+		Handler: RadlibsCommandHandler,
+	})
 }
 
 func init() {
@@ -40,6 +56,26 @@ func init() {
 	singularNouns.Combine(&animals, &fruit)
 	gerunds.Fill("customizations/gerunds.txt", true)
 	adverbs.Fill("customizations/adverbs.txt", true)
+}
+
+func RadlibsCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+
+	libbedMsg := DoRadlibs(i)
+
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: libbedMsg,
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    fmt.Sprintf("%s RadLibs 😎", customs.BotName),
+						IconURL: s.State.User.AvatarURL("1024"),
+					},
+				},
+			},
+		},
+	})
 }
 
 // This function splits up the message string and loops over every string
