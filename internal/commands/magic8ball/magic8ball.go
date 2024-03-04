@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
@@ -12,10 +13,48 @@ type Randomizer = types.Randomizer
 
 var (
 	responses Randomizer
+	Commands  []commands.Command
+	customs   = utils.GetCustoms()
 )
+
+var EightBallCommand = discordgo.ApplicationCommand{
+	Name:        "8ball",
+	Description: "Shake a magic 8-ball",
+	Options: []*discordgo.ApplicationCommandOption{
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "question",
+			Description: "Optional question for the 8-ball",
+			Required:    false,
+		},
+	},
+}
 
 func init() {
 	responses.Fill("customizations/8ballresponses.txt", true)
+	Commands = append(Commands, commands.Command{
+		AppComm: &EightBallCommand,
+		Handler: EightBallCommandHandler,
+	})
+}
+
+func EightBallCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	ballResponse := ShakeTheBall(i)
+
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: ballResponse,
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    fmt.Sprintf("%s Magic 8-Ball", customs.BotName),
+						IconURL: utils.GetCdnUri("8ball-icon"),
+					},
+				},
+			},
+		},
+	})
 }
 
 func ShakeTheBall(i *discordgo.InteractionCreate) string {

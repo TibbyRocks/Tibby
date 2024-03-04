@@ -4,14 +4,40 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
 var (
-	customs = utils.GetCustoms()
+	Commands []commands.Command
+	customs  = utils.GetCustoms()
 )
 
-func HandleRootCommand(i *discordgo.InteractionCreate, s *discordgo.Session) {
+func init() {
+	Commands = append(Commands, commands.Command{
+		AppComm: &RootCommand,
+		Handler: RootCommandHandler,
+	})
+}
+
+var RootCommand = discordgo.ApplicationCommand{
+	Name:        customs.RootCommand,
+	Description: fmt.Sprintf("General commands for %s", customs.BotName),
+	Options: []*discordgo.ApplicationCommandOption{
+		{
+			Name:        "docs",
+			Description: fmt.Sprintf("Get the %s docs", customs.BotName),
+			Type:        discordgo.ApplicationCommandOptionSubCommand,
+		},
+		{
+			Name:        "info",
+			Description: fmt.Sprintf("Get the %s runtime information", customs.BotName),
+			Type:        discordgo.ApplicationCommandOptionSubCommand,
+		},
+	},
+}
+
+func RootCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 
 	switch options[0].Name {

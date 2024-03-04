@@ -1,8 +1,8 @@
 package commands
 
-type Command struct {
-	Name string
-	Help string
-}
+import "github.com/bwmarrin/discordgo"
 
-var BotCommands map[string]*Command = make(map[string]*Command)
+type Command struct {
+	AppComm *discordgo.ApplicationCommand
+	Handler func(s *discordgo.Session, i *discordgo.InteractionCreate)
+}

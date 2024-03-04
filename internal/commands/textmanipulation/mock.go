@@ -5,8 +5,43 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
+
+var (
+	Command commands.Command
+	//customs = utils.GetCustoms()
+)
+
+var MockifyCommand = discordgo.ApplicationCommand{
+	Name: "Mockify",
+	Type: discordgo.MessageApplicationCommand,
+}
+
+func init() {
+	Commands = append(Commands, commands.Command{
+		AppComm: &MockifyCommand,
+		Handler: MockifyCommandHandler,
+	})
+}
+
+func MockifyCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: MockText(i),
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    "Mock",
+						IconURL: s.State.User.AvatarURL("1024"),
+					},
+				},
+			},
+		},
+	})
+}
 
 func MockText(i *discordgo.InteractionCreate) string {
 	utils.LogCmd(i)

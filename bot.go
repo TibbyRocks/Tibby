@@ -10,17 +10,15 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	_ "github.com/tibbyrocks/tibby/internal/autoload"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
 	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
 	"github.com/tibbyrocks/tibby/internal/commands/tibbycmds"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
-	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
-
-type Randomizer = types.Randomizer
 
 var (
 	GuildID            = ""
@@ -33,182 +31,15 @@ var (
 )
 
 var (
-	botCommands = []*discordgo.ApplicationCommand{
-		{
-			Name:        "radlibs",
-			Description: "Replaces certain tokens with words",
-			Options: []*discordgo.ApplicationCommandOption{
-				{
-					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "msg",
-					Description: "Message with the tokens you want to radlib",
-					Required:    true,
-				},
-			},
-		},
-		{
-			Name:        "8ball",
-			Description: "Shake a magic 8-ball",
-			Options: []*discordgo.ApplicationCommandOption{
-				{
-					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "question",
-					Description: "Optional question for the 8-ball",
-					Required:    false,
-				},
-			},
-		},
-		{
-			Name: "Translate to English",
-			Type: discordgo.MessageApplicationCommand,
-		},
-		{
-			Name: "Mockify",
-			Type: discordgo.MessageApplicationCommand,
-		},
-		{
-			Name: "UwUify",
-			Type: discordgo.MessageApplicationCommand,
-		},
-		{
-			Name:        "wisdom",
-			Description: "Get a (random) quote",
-			Options: []*discordgo.ApplicationCommandOption{
-				{
-					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "quoteid",
-					Description: "quotable.io quote ID",
-					Required:    false,
-				},
-			},
-		},
-		{
-			Name:        customs.RootCommand,
-			Description: fmt.Sprintf("General commands for %s", customs.BotName),
-			Options: []*discordgo.ApplicationCommandOption{
-				{
-					Name:        "docs",
-					Description: fmt.Sprintf("Get the %s docs", customs.BotName),
-					Type:        discordgo.ApplicationCommandOptionSubCommand,
-				},
-				{
-					Name:        "info",
-					Description: fmt.Sprintf("Get the %s runtime information", customs.BotName),
-					Type:        discordgo.ApplicationCommandOptionSubCommand,
-				},
-			},
-		},
+	botCommandSlices []*[]commands.Command = []*[]commands.Command{
+		&tibbycmds.Commands,
+		&magic8ball.Commands,
+		&radlibs.Commands,
+		&textmanipulation.Commands,
+		&translations.Commands,
+		&wisdom.Commands,
 	}
-
-	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"radlibs": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
-			libbedMsg := radlibs.DoRadlibs(i)
-
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: libbedMsg,
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s RadLibs 😎", customs.BotName),
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
-		"8ball": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			ballResponse := magic8ball.ShakeTheBall(i)
-
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: ballResponse,
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s Magic 8-Ball", customs.BotName),
-								IconURL: utils.GetCdnUri("8ball-icon"),
-							},
-						},
-					},
-				},
-			})
-		},
-		"Translate to English": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: translations.MsgTranslationToEnglish(i),
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s Translator", customs.BotName),
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
-		"Mockify": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: textmanipulation.MockText(i),
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "Mock",
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
-		"UwUify": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: textmanipulation.Uwuify(i),
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    "UwUify",
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
-		"wisdom": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
-			quoteMsg := wisdom.GetQuote(i)
-
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Embeds: []*discordgo.MessageEmbed{
-						{
-							Description: quoteMsg,
-							Author: &discordgo.MessageEmbedAuthor{
-								Name:    fmt.Sprintf("%s Wisdom", customs.BotName),
-								IconURL: s.State.User.AvatarURL("1024"),
-							},
-						},
-					},
-				},
-			})
-		},
-		customs.RootCommand: func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			tibbycmds.HandleRootCommand(i, s)
-		},
-	}
+	botCommands = splitBotCommands(botCommandSlices)
 )
 
 func init() {
@@ -216,6 +47,18 @@ func init() {
 	if *debugMode {
 		utils.LogLevel.Set(slog.LevelDebug)
 	}
+}
+
+func splitBotCommands(cmdSlices []*[]commands.Command) map[string]commands.Command {
+	var commandSlice []commands.Command
+	var commandMap map[string]commands.Command = make(map[string]commands.Command)
+	for _, v := range cmdSlices {
+		commandSlice = append(commandSlice, *v...)
+	}
+	for _, v := range commandSlice {
+		commandMap[v.AppComm.Name] = v
+	}
+	return commandMap
 }
 
 func main() {
@@ -250,8 +93,8 @@ func setupDiscordSession() {
 
 func addDiscordHandlers() {
 	dc.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
-			h(s, i)
+		if h, ok := botCommands[i.ApplicationCommandData().Name]; ok {
+			h.Handler(s, i)
 		}
 	})
 }
@@ -267,13 +110,11 @@ func openDiscordConnection() {
 
 func registerDiscordCommands() {
 	log.Info("Registering commands with the Discord API")
-	registeredCommands := make([]*discordgo.ApplicationCommand, len(botCommands))
-	for i, v := range botCommands {
-		cmd, err := dc.ApplicationCommandCreate(dc.State.User.ID, "", v)
+	for _, v := range botCommands {
+		_, err := dc.ApplicationCommandCreate(dc.State.User.ID, "", v.AppComm)
 		if err != nil {
-			log.Error(fmt.Sprintf("Cannot create '%s' command: %s", v.Name, err))
+			log.Error(fmt.Sprintf("Cannot create '%s' command: %s", v.AppComm.Name, err))
 		}
-		registeredCommands[i] = cmd
 	}
 
 }

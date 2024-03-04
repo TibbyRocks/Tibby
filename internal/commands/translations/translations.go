@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbyrocks/tibby/internal/commands"
 	googletranslate "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslate"
 	googletranslatev3 "github.com/tibbyrocks/tibby/internal/commands/translations/GoogleTranslateV3"
 	microsofttranslate "github.com/tibbyrocks/tibby/internal/commands/translations/MicrosoftTranslate"
@@ -23,12 +24,40 @@ import (
 
 var (
 	Translators map[string]types.Translator = make(map[string]types.Translator)
+	Commands    []commands.Command
+	customs     = utils.GetCustoms()
 )
 
 func init() {
 	Translators["microsoft"] = microsofttranslate.Translator
 	Translators["google"] = googletranslate.Translator
 	Translators["googlev3"] = googletranslatev3.Translator
+	Commands = append(Commands, commands.Command{
+		AppComm: &TransToEnglishCommand,
+		Handler: TransToEnglishCommandHandler,
+	})
+}
+
+var TransToEnglishCommand = discordgo.ApplicationCommand{
+	Name: "Translate to English",
+	Type: discordgo.MessageApplicationCommand,
+}
+
+func TransToEnglishCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Description: MsgTranslationToEnglish(i),
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    fmt.Sprintf("%s Translator", customs.BotName),
+						IconURL: s.State.User.AvatarURL("1024"),
+					},
+				},
+			},
+		},
+	})
 }
 
 func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
