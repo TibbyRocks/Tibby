@@ -50,8 +50,6 @@ func Translate(fromLang string, toLang string, translatable string) (types.Singl
 	translations := resp.GetTranslations()
 
 	finalTranslation := types.SingleTranslation{
-		// Google Translate takes the translatable string as a query parameter and has to be escaped.
-		// So when the result comes back we have to unescape it back to the original symbols.
 		TranslatedText: translations[0].TranslatedText,
 		FromLangCode:   translations[0].DetectedLanguageCode,
 		ToLangCode:     toLang,

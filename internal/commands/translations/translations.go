@@ -3,6 +3,7 @@ package translations
 import (
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbyrocks/tibby/internal/commands"
@@ -11,6 +12,7 @@ import (
 	microsofttranslate "github.com/tibbyrocks/tibby/internal/commands/translations/MicrosoftTranslate"
 	"github.com/tibbyrocks/tibby/internal/types"
 	"github.com/tibbyrocks/tibby/internal/utils"
+	"github.com/tibbyrocks/tibby/internal/utils/computervision"
 )
 
 /*
@@ -23,6 +25,7 @@ import (
 */
 
 var (
+	log                                     = utils.Log
 	Translators map[string]types.Translator = make(map[string]types.Translator)
 	Commands    []commands.Command
 	customs     = utils.GetCustoms()
@@ -44,6 +47,7 @@ var TransToEnglishCommand = discordgo.ApplicationCommand{
 }
 
 func TransToEnglishCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	fmt.Print(i.ApplicationCommandData().Resolved.Messages[i.ApplicationCommandData().TargetID].Attachments[0])
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
@@ -68,9 +72,11 @@ func MsgTranslationToEnglish(i *discordgo.InteractionCreate) string {
 	if len(msg.Embeds) > 0 {
 		return fmt.Sprintf("I can't translate embeds, sorry.\n\n[Go to the original message](%v)", msgUrl)
 	}
-
-	if len(msg.Content) < 1 {
+	if len(msg.Content) < 1 && len(msg.Attachments) < 1 {
 		return fmt.Sprintf("I can't translate messages without text, sorry.\n\n[Go to the original message](%v)", msgUrl)
+	}
+	if len(msg.Attachments) >= 1 {
+		return fmt.Sprintf("I can't translate messages with multiple attachments, sorry.\n\n[Go to the original message](%v)", msgUrl)
 	}
 
 	var erroredTranslations string = `Failed to translate
@@ -100,4 +106,22 @@ func buildMessage(translation types.SingleTranslation, msgURL string) string {
 	builtMessage := fmt.Sprintf(translationFormatString, translation.FromLang, translation.FromLangNative, translation.OriginalText, translation.ToLang, translation.ToLangNative, translation.TranslatedText, msgURL)
 
 	return builtMessage
+}
+
+func handleAttachments(attachments []*discordgo.MessageAttachment) []string {
+	var attachmentStrings []string
+	imageType := regexp.MustCompile(`image\/.*`)
+
+	for _, a := range attachments {
+		if imageType.MatchString(a.ContentType) {
+			text, err := computervision.GetTextFromImage(a.ProxyURL)
+			if err != nil {
+				log.Error(err.Error())
+			} else {
+				attachmentStrings = append(attachmentStrings, text)
+			}
+		}
+	}
+
+	return attachmentStrings
 }
