@@ -93,9 +93,17 @@ func setupDiscordSession() {
 
 func addDiscordHandlers() {
 	dc.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		if h, ok := botCommands[i.ApplicationCommandData().Name]; ok {
-			h.Handler(s, i)
+		switch i.Type {
+		case discordgo.InteractionApplicationCommand:
+			if h, ok := botCommands[i.ApplicationCommandData().Name]; ok {
+				h.Handler(s, i)
+			}
+		case discordgo.InteractionModalSubmit:
+			fmt.Print(i.ModalSubmitData())
+		case discordgo.InteractionMessageComponent:
+			fmt.Printf("%+v\n", i.MessageComponentData().Resolved.Users)
 		}
+
 	})
 }
 

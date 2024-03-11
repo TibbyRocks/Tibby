@@ -19,7 +19,6 @@ type Randomizer = types.Randomizer
 
 var (
 	furryFlavourText Randomizer
-	Commands         []commands.Command
 )
 
 func init() {

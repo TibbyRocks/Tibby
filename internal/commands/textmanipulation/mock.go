@@ -9,11 +9,6 @@ import (
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
-var (
-	Command commands.Command
-	//customs = utils.GetCustoms()
-)
-
 var MockifyCommand = discordgo.ApplicationCommand{
 	Name: "Mockify",
 	Type: discordgo.MessageApplicationCommand,
