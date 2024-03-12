@@ -60,7 +60,7 @@ func init() {
 
 func RadlibsCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
-	libbedMsg := DoRadlibs(i)
+	libbedMsg := DoRadlibs(s, i)
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -79,19 +79,21 @@ func RadlibsCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 }
 
 // This function splits up the message string and loops over every string
-func DoRadlibs(i *discordgo.InteractionCreate) string {
+func DoRadlibs(s *discordgo.Session, i *discordgo.InteractionCreate) string {
 	utils.LogCmd(i)
 	optionMap := utils.GetOptionsFromInteraction(i)
 	message := optionMap["msg"].StringValue()
+	members, _ := s.GuildMembers(i.GuildID, "", 1000)
+
 	splitMessage := strings.Split(message, " ")
 	var workSlice []string
 	for _, s := range splitMessage {
-		workSlice = append(workSlice, replaceRadlibToken(s))
+		workSlice = append(workSlice, replaceRadlibToken(s, members))
 	}
 	return strings.Join(workSlice, " ")
 }
 
-func replaceRadlibToken(token string) string {
+func replaceRadlibToken(token string, members []*discordgo.Member) string {
 	token = strings.ReplaceAll(token, "$ANIMAL", animals.Random())
 	token = strings.ReplaceAll(token, "$FRUIT", fruit.Random())
 	token = strings.ReplaceAll(token, "$NOUNS", pluralNouns.Random())
@@ -100,5 +102,6 @@ func replaceRadlibToken(token string) string {
 	token = strings.ReplaceAll(token, "$VERB", verbs.Random())
 	token = strings.ReplaceAll(token, "$ADJ", adjectives.Random())
 	token = strings.ReplaceAll(token, "$ADVERB", adverbs.Random())
+	token = strings.ReplaceAll(token, "$CHATTER", utils.RandomMemberName(members))
 	return token
 }
