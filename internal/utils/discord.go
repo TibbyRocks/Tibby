@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -46,6 +47,23 @@ func GetOptionsFromInteraction(i *discordgo.InteractionCreate) map[string]*disco
 		optionMap[opt.Name] = opt
 	}
 	return optionMap
+}
+
+func RandomMemberName(members []*discordgo.Member) string {
+	var username string
+	if len(members) == 0 {
+		return ""
+	}
+	var member *discordgo.Member = members[rand.Intn(len(members))]
+	if member.User.Bot {
+		member = members[rand.Intn(len(members))]
+	}
+	if member.Nick != "" {
+		username = member.Nick
+	} else {
+		username = member.User.Username
+	}
+	return username
 }
 
 func GetOptionsStringsFromInteraction(i *discordgo.InteractionCreate) map[string]string {
