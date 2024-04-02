@@ -13,7 +13,6 @@ import (
 	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
-	"github.com/tibbyrocks/tibby/internal/commands/textmanipulation"
 	"github.com/tibbyrocks/tibby/internal/commands/tibbycmds"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
@@ -35,7 +34,6 @@ var (
 		&tibbycmds.Commands,
 		&magic8ball.Commands,
 		&radlibs.Commands,
-		&textmanipulation.Commands,
 		&translations.Commands,
 		&wisdom.Commands,
 	}
