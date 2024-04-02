@@ -13,7 +13,6 @@ import (
 type Randomizer = types.Randomizer
 
 var (
-	responses    Randomizer
 	yesResponses Randomizer
 	noResponses  Randomizer
 	Commands     []commands.Command
@@ -34,7 +33,6 @@ var EightBallCommand = discordgo.ApplicationCommand{
 }
 
 func init() {
-	responses.Fill("customizations/8ballresponses.txt", true)
 	yesResponses.Fill("customizations/8ball/yes.txt", true)
 	noResponses.Fill("customizations/8ball/no.txt", true)
 	Commands = append(Commands, commands.Command{
