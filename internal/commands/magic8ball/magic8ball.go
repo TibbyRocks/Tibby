@@ -2,6 +2,7 @@ package magic8ball
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbyrocks/tibby/internal/commands"
@@ -12,9 +13,11 @@ import (
 type Randomizer = types.Randomizer
 
 var (
-	responses Randomizer
-	Commands  []commands.Command
-	customs   = utils.GetCustoms()
+	responses    Randomizer
+	yesResponses Randomizer
+	noResponses  Randomizer
+	Commands     []commands.Command
+	customs      = utils.GetCustoms()
 )
 
 var EightBallCommand = discordgo.ApplicationCommand{
@@ -32,6 +35,8 @@ var EightBallCommand = discordgo.ApplicationCommand{
 
 func init() {
 	responses.Fill("customizations/8ballresponses.txt", true)
+	yesResponses.Fill("customizations/8ball/yes.txt", true)
+	noResponses.Fill("customizations/8ball/no.txt", true)
 	Commands = append(Commands, commands.Command{
 		AppComm: &EightBallCommand,
 		Handler: EightBallCommandHandler,
@@ -63,7 +68,15 @@ func ShakeTheBall(i *discordgo.InteractionCreate) string {
 
 	var shaker string
 	var question string
-	ballResponse := responses.Random()
+	var ballResponse string
+
+	randNum := rand.Intn(100) + 1
+
+	if randNum <= 50 {
+		ballResponse = yesResponses.Random()
+	} else {
+		ballResponse = noResponses.Random()
+	}
 
 	shaker = utils.GetNickFromInteraction(i)
 
