@@ -16,6 +16,7 @@ import (
 	"github.com/tibbyrocks/tibby/internal/commands/tibbycmds"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
+	"github.com/tibbyrocks/tibby/internal/rdb"
 	"github.com/tibbyrocks/tibby/internal/utils"
 )
 
@@ -63,6 +64,7 @@ func main() {
 	log.Info("Starting " + customs.BotName)
 
 	tibbycmds.RegisterAppStart()
+	rdb.TestRedis()
 	setupDiscordSession()
 	addDiscordHandlers()
 	openDiscordConnection()
