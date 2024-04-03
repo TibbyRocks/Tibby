@@ -123,9 +123,11 @@ func getQuoteByID(id string) quote {
 	}
 
 	if res.StatusCode == 404 {
-		resolvedQuote.Content = "Four-Oh-Four"
-		resolvedQuote.Author = "The Server"
-		resolvedQuote.Id = "N0T-F0UND"
+		resolvedQuote = quote{
+			Content: "Four-Oh-Four",
+			Author:  "The Server",
+			Id:      "N0T-F0UND",
+		}
 	} else {
 		if err := json.NewDecoder(res.Body).Decode(&resolvedQuote); err != nil {
 			log.Error(err.Error())
