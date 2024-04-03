@@ -109,9 +109,17 @@ func getQuoteByID(id string) quote {
 		log.Error(err.Error())
 	}
 
+	var failedQuote quote = quote{
+		Id:      "404",
+		Content: "Could not get a quote...",
+		Author:  customs.BotName,
+	}
+
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Error(err.Error())
+		resolvedQuote = failedQuote
+		return resolvedQuote
 	}
 
 	if res.StatusCode == 404 {
@@ -121,6 +129,8 @@ func getQuoteByID(id string) quote {
 	} else {
 		if err := json.NewDecoder(res.Body).Decode(&resolvedQuote); err != nil {
 			log.Error(err.Error())
+			resolvedQuote = failedQuote
+			return resolvedQuote
 		}
 	}
 
