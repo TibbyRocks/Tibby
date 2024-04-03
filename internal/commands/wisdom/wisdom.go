@@ -71,18 +71,30 @@ func getRandomQuotes(amount int) []quote {
 	q.Add("limit", fmt.Sprint(amount))
 	reqUrl.RawQuery = q.Encode()
 
+	var failedQuote quote = quote{
+		Id:      "404",
+		Content: "Could not get a quote...",
+		Author:  customs.BotName,
+	}
+
 	req, err := http.NewRequest("GET", reqUrl.String(), nil)
 	if err != nil {
 		log.Error(err.Error())
+		quoteArray = append(quoteArray, failedQuote)
+		return quoteArray
 	}
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Error(err.Error())
+		quoteArray = append(quoteArray, failedQuote)
+		return quoteArray
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&quoteArray); err != nil {
 		log.Error(err.Error())
+		quoteArray = append(quoteArray, failedQuote)
+		return quoteArray
 	}
 
 	return quoteArray
