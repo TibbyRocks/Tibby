@@ -1,6 +1,6 @@
 ## Tibby
  
-A Discord bot written in Go utilizing the DiscordGo library
+A Discord bot written in Go utilizing the DiscordGo library.
 
 ### Status checks
 
