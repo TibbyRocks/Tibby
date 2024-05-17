@@ -13,6 +13,7 @@ import (
 	"github.com/tibbyrocks/tibby/internal/commands"
 	"github.com/tibbyrocks/tibby/internal/commands/magic8ball"
 	"github.com/tibbyrocks/tibby/internal/commands/radlibs"
+	"github.com/tibbyrocks/tibby/internal/commands/sorrygenerator"
 	"github.com/tibbyrocks/tibby/internal/commands/tibbycmds"
 	"github.com/tibbyrocks/tibby/internal/commands/translations"
 	"github.com/tibbyrocks/tibby/internal/commands/wisdom"
@@ -36,8 +37,9 @@ var (
 		&radlibs.Commands,
 		&translations.Commands,
 		&wisdom.Commands,
+		&sorrygenerator.Commands,
 	}
-	botCommands = splitBotCommands(botCommandSlices)
+	botCommands, interactionMap = splitBotCommands(botCommandSlices)
 )
 
 func init() {
@@ -47,16 +49,22 @@ func init() {
 	}
 }
 
-func splitBotCommands(cmdSlices []*[]commands.Command) map[string]commands.Command {
+func splitBotCommands(cmdSlices []*[]commands.Command) (map[string]commands.Command, map[string]commands.Command) {
 	var commandSlice []commands.Command
 	var commandMap map[string]commands.Command = make(map[string]commands.Command)
+	var interactionMap map[string]commands.Command = make(map[string]commands.Command)
 	for _, v := range cmdSlices {
 		commandSlice = append(commandSlice, *v...)
 	}
 	for _, v := range commandSlice {
 		commandMap[v.AppComm.Name] = v
+		if len(v.InteractionIDPrefixes) > 0 {
+			for _, idPrefix := range v.InteractionIDPrefixes {
+				interactionMap[idPrefix] = v
+			}
+		}
 	}
-	return commandMap
+	return commandMap, interactionMap
 }
 
 func main() {
@@ -91,9 +99,21 @@ func setupDiscordSession() {
 
 func addDiscordHandlers() {
 	dc.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		if h, ok := botCommands[i.ApplicationCommandData().Name]; ok {
-			h.Handler(s, i)
+		switch i.Type {
+		case discordgo.InteractionApplicationCommand:
+			if h, ok := botCommands[i.ApplicationCommandData().Name]; ok {
+				h.Handler(s, i)
+			}
+		case discordgo.InteractionModalSubmit:
+			if h, ok := interactionMap[utils.GetCustomIDPrefix(i.ModalSubmitData().CustomID)]; ok {
+				h.Handler(s, i)
+			}
+		case discordgo.InteractionMessageComponent:
+			if h, ok := interactionMap[utils.GetCustomIDPrefix(i.MessageComponentData().CustomID)]; ok {
+				h.Handler(s, i)
+			}
 		}
+
 	})
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -106,4 +107,8 @@ func HexToDec(hex string) int {
 	dec, _ := strconv.ParseInt(hex, 16, 32)
 
 	return int(dec)
+}
+
+func GetCustomIDPrefix(CustomID string) string {
+	return strings.Split(CustomID, "-")[0]
 }
