@@ -34,6 +34,31 @@ var RootCommand = discordgo.ApplicationCommand{
 			Description: fmt.Sprintf("Get the %s runtime information", customs.BotName),
 			Type:        discordgo.ApplicationCommandOptionSubCommand,
 		},
+		{
+			Name:        "guilds",
+			Description: fmt.Sprintf("Admin: Manage the servers %s is in", customs.BotName),
+			Type:        discordgo.ApplicationCommandOptionSubCommandGroup,
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Name:        "list",
+					Description: fmt.Sprintf("List the servers %s is in", customs.BotName),
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+				},
+				{
+					Name:        "leave",
+					Description: fmt.Sprintf("Make %s leave a server", customs.BotName),
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+					Options: []*discordgo.ApplicationCommandOption{
+						{
+							Name:        "guildid",
+							Description: "The Guild to leave",
+							Type:        discordgo.ApplicationCommandOptionString,
+							Required:    true,
+						},
+					},
+				},
+			},
+		},
 	},
 }
 
@@ -76,5 +101,17 @@ func RootCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				},
 			},
 		})
+	case "guilds":
+		if !utils.InteractionAdminCheck(s, i) {
+			return
+		}
+
+		switch options[0].Options[0].Name {
+		case "list":
+			ShowBotGuilds(s, i)
+
+		case "leave":
+			LeaveGuild(s, i)
+		}
 	}
 }

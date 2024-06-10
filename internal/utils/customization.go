@@ -3,6 +3,9 @@ package utils
 import (
 	"encoding/json"
 	"os"
+	"slices"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 type CustomizationOptions struct {
@@ -13,6 +16,7 @@ type CustomizationOptions struct {
 		BaseURL string
 		Files   map[string]string
 	}
+	BotAdmins []string `json:"BotAdmins"`
 }
 
 func GetCustoms() CustomizationOptions {
@@ -41,4 +45,28 @@ func GetCdnUri(fileName string) string {
 		Log.Error("Couldn't find an customization entry for the file " + fileName)
 	}
 	return ""
+}
+
+func UserIsBotAdmin(userID string) bool {
+	BotCustoms := GetCustoms()
+	if slices.Contains(BotCustoms.BotAdmins, userID) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func InteractionAdminCheck(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
+	if !UserIsBotAdmin(GetUserobjectFromInteraction(i).ID) {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Flags:   discordgo.MessageFlagsEphemeral,
+				Content: "You need to be a bot admin to perform that command.",
+			},
+		})
+		return false
+	} else {
+		return true
+	}
 }
