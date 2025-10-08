@@ -36,5 +36,6 @@ jobs:
               with:
                 artifacts: "bin/*"
                 generateReleaseNotes: true
+                allowUpdates: true
 
             
